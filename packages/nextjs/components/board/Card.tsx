@@ -7,7 +7,7 @@ export const Card = ({ id, content, index }: any) => {
 
   const handleDrop = async (item: any, index: any) => {
     console.log(item, index);
-    router.push("/example-ui");
+    router.push("/confirm/play/" + item.id);
   };
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -30,7 +30,7 @@ export const Card = ({ id, content, index }: any) => {
   return (
     <div
       ref={cellRef}
-      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 bg-white"
+      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 bg-white mb-2"
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",

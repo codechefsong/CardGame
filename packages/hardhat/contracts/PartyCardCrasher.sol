@@ -4,7 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 contract PartyCardCrasher {
   // State Variables
   address public immutable owner;
-  uint256 currentCard = 5;
+  uint256 public currentCard = 5;
   mapping(address => uint256[]) public playerCards;
   mapping(address => bool) public isPay;
 

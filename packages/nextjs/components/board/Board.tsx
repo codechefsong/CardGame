@@ -1,35 +1,68 @@
 import { Card } from "./Card";
+import { useAccount } from "wagmi";
+import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
-const gridData = [
-  {
-    id: 0,
-    content: "5",
-  },
-  {
-    id: 1,
-    content: "3",
-  },
-  {
-    id: 2,
-    content: "2",
-  },
-];
 export const Board = () => {
+  const { address } = useAccount();
+
+  const { data: currentCard } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "currentCard",
+  });
+
+  const { data: isPay } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "isPay",
+    args: [address],
+  });
+
+  const { data: playerCards } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "getPlayerCards",
+    args: [address],
+  });
+
+  const { writeAsync: playGame } = useScaffoldContractWrite({
+    contractName: "PartyCardCrasher",
+    functionName: "playGame",
+    onBlockConfirmation: txnReceipt => {
+      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
+  const { writeAsync: drawCard } = useScaffoldContractWrite({
+    contractName: "PartyCardCrasher",
+    functionName: "drawCard",
+    onBlockConfirmation: txnReceipt => {
+      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
   return (
     <div>
       <div className="flex">
         <div>
+          <h1 className="mt-3 text-4xl">Deck</h1>
+          <Card key={"99"} id={99} content={currentCard?.toString()} index={99} />
+          {!isPay && (
+            <button
+              className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
+              onClick={() => playGame()}
+            >
+              Play Game
+            </button>
+          )}
           <h2 className="mt-4 text-3xl">Your Cards</h2>
+          {isPay && (
+            <button
+              className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
+              onClick={() => drawCard()}
+            >
+              Draw Card
+            </button>
+          )}
           <div className="flex flex-wrap" style={{ width: "350px" }}>
-            {gridData &&
-              gridData.map((item, index) => (
-                <Card
-                  key={item.id.toString()}
-                  id={item.id.toString()}
-                  content={item.content.toString()}
-                  index={index}
-                />
-              ))}
+            {playerCards &&
+              playerCards.map((val, index) => <Card key={index} id={index} content={val.toString()} index={index} />)}
           </div>
         </div>
       </div>
