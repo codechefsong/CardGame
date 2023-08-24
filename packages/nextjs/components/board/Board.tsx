@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { Player } from "./Player";
 import { useAccount } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
@@ -8,6 +9,11 @@ export const Board = () => {
   const { data: currentCard } = useScaffoldContractRead({
     contractName: "PartyCardCrasher",
     functionName: "currentCard",
+  });
+
+  const { data: currentPlayers } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "getCurrentPlayers",
   });
 
   const { data: isPay } = useScaffoldContractRead({
@@ -40,6 +46,11 @@ export const Board = () => {
   return (
     <div>
       <div className="flex">
+        <div>
+          {currentPlayers?.map((playerAddress, index) => {
+            return address !== playerAddress && <Player address={playerAddress} yourAddress={address} key={index}/>
+          })}
+        </div>
         <div>
           <h1 className="mt-3 text-4xl">Deck</h1>
           <Card key={"99"} id={99} content={currentCard?.toString()} index={99} />

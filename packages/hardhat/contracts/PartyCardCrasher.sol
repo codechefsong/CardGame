@@ -7,6 +7,7 @@ contract PartyCardCrasher {
   uint256 public currentCard = 5;
   mapping(address => uint256[]) public playerCards;
   mapping(address => bool) public isPay;
+  address[] public currentPlayers;
 
   constructor(address _owner) {
     owner = _owner;
@@ -21,6 +22,7 @@ contract PartyCardCrasher {
     isPay[msg.sender] = true;
     uint256[] memory cards = drawCards(7);
     playerCards[msg.sender] = cards;
+    currentPlayers.push(msg.sender);
   }
 
   function playCard(uint256 index) public {
@@ -51,6 +53,10 @@ contract PartyCardCrasher {
 
   function getPlayerCards(address player) public view returns (uint256[] memory) {
     return playerCards[player];
+  }
+
+  function getCurrentPlayers() public view returns (address[] memory) {
+    return currentPlayers;
   }
 
   /**
