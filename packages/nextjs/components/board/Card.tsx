@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import { useDrag, useDrop } from "react-dnd";
 
-export const Card = ({ id, content, index, startGame }: any) => {
+export const Card = ({ id, content, index, startGame, currentCard }: any) => {
   const router = useRouter();
 
   const handleDrop = async (item: any, index: any) => {
@@ -12,6 +12,17 @@ export const Card = ({ id, content, index, startGame }: any) => {
 
   const canMove = () => {
     if (index === 99) return true;
+    return false;
+  };
+
+  const canPlay = () => {
+    if (
+      +content === +currentCard + 1 ||
+      +content === +currentCard - 1 ||
+      (+currentCard === 9 && +content === 1) ||
+      (+currentCard === 1 && +content === 9)
+    )
+      return true;
     return false;
   };
 
@@ -40,10 +51,11 @@ export const Card = ({ id, content, index, startGame }: any) => {
   return (
     <div
       ref={cellRef}
-      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 bg-white mb-2 relative"
+      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 mb-2 relative"
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
+        background: canPlay() ? "#00cc99" : "white",
       }}
     >
       {content}

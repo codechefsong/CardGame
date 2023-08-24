@@ -81,7 +81,14 @@ export const Board = () => {
           <div className="flex flex-wrap  mt-3" style={{ width: "350px" }}>
             {playerCards &&
               playerCards.map((val, index) => (
-                <Card key={index} id={index} content={val.toString()} index={index} startGame={startGame} />
+                <Card
+                  key={index}
+                  id={index}
+                  content={val.toString()}
+                  index={index}
+                  startGame={startGame}
+                  currentCard={currentCard?.toString()}
+                />
               ))}
           </div>
         </div>
