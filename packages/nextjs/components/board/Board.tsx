@@ -16,6 +16,11 @@ export const Board = () => {
     functionName: "getCurrentPlayers",
   });
 
+  const { data: startGame } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "startGame",
+  });
+
   const { data: isPay } = useScaffoldContractRead({
     contractName: "PartyCardCrasher",
     functionName: "isPay",
@@ -53,7 +58,7 @@ export const Board = () => {
         </div>
         <div>
           <h1 className="mt-3 text-4xl">Deck</h1>
-          <Card key={"99"} id={99} content={currentCard?.toString()} index={99} />
+          <Card key={"99"} id={99} content={currentCard?.toString()} index={99} startGame={startGame} />
           {!isPay && (
             <button
               className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
@@ -75,7 +80,9 @@ export const Board = () => {
           )}
           <div className="flex flex-wrap  mt-3" style={{ width: "350px" }}>
             {playerCards &&
-              playerCards.map((val, index) => <Card key={index} id={index} content={val.toString()} index={index} />)}
+              playerCards.map((val, index) => (
+                <Card key={index} id={index} content={val.toString()} index={index} startGame={startGame} />
+              ))}
           </div>
         </div>
       </div>

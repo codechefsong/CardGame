@@ -2,12 +2,17 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import { useDrag, useDrop } from "react-dnd";
 
-export const Card = ({ id, content, index }: any) => {
+export const Card = ({ id, content, index, startGame }: any) => {
   const router = useRouter();
 
   const handleDrop = async (item: any, index: any) => {
     console.log(item, index);
     router.push("/confirm/play/" + item.id);
+  };
+
+  const canMove = () => {
+    if (index === 99) return true;
+    return false;
   };
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -18,9 +23,14 @@ export const Card = ({ id, content, index }: any) => {
     }),
   }));
 
-  const [, drop] = useDrop(() => ({
+  const [{ isOver, canDrop }, drop] = useDrop(() => ({
     accept: "CELL",
     drop: item => handleDrop(item, index),
+    canDrop: () => canMove(),
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
+    }),
   }));
 
   const cellRef = useRef(null);
@@ -30,13 +40,58 @@ export const Card = ({ id, content, index }: any) => {
   return (
     <div
       ref={cellRef}
-      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 bg-white mb-2"
+      className="w-16 h-20 border border-gray-300 flex items-center justify-center font-bold mr-2 bg-white mb-2 relative"
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
       }}
     >
       {content}
+      {isOver && canDrop && startGame && (
+        <div
+          className="overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.5,
+            backgroundColor: "blue",
+          }}
+        />
+      )}
+      {!isOver && canDrop && startGame && (
+        <div
+          className="overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.5,
+            backgroundColor: "yellow",
+          }}
+        />
+      )}
+      {isOver && !canDrop && !startGame && (
+        <div
+          className="overlay"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.5,
+            backgroundColor: "red",
+          }}
+        />
+      )}
     </div>
   );
 };
