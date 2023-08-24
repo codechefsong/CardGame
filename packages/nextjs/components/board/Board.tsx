@@ -48,7 +48,7 @@ export const Board = () => {
       <div className="flex">
         <div>
           {currentPlayers?.map((playerAddress, index) => {
-            return address !== playerAddress && <Player address={playerAddress} yourAddress={address} key={index}/>
+            return address !== playerAddress && <Player address={playerAddress} yourAddress={address} key={index} />;
           })}
         </div>
         <div>

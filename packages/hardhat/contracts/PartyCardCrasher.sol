@@ -5,6 +5,7 @@ contract PartyCardCrasher {
   // State Variables
   address public immutable owner;
   uint256 public currentCard = 5;
+  bool public startGame;
   mapping(address => uint256[]) public playerCards;
   mapping(address => bool) public isPay;
   address[] public currentPlayers;
@@ -23,10 +24,24 @@ contract PartyCardCrasher {
     uint256[] memory cards = drawCards(7);
     playerCards[msg.sender] = cards;
     currentPlayers.push(msg.sender);
+
+    if (currentPlayers.length > 1) startGame = true;
+    if (currentPlayers.length > 2) {
+      for (uint i = 0; i < currentPlayers.length; i++) {
+        if (currentPlayers[i] != msg.sender) {
+          uint256[] memory draw2cards = drawCards(2);
+          playerCards[currentPlayers[i]].push(draw2cards[0]);
+          playerCards[currentPlayers[i]].push(draw2cards[1]);
+        }
+      }
+    }
   }
 
   function playCard(uint256 index) public {
     require(index < playerCards[msg.sender].length, "You do not have this card");
+    require(startGame, "Must have at least 2 players");
+
+    currentCard = playerCards[msg.sender][index];
 
     for (uint i = index; i < playerCards[msg.sender].length - 1; i++) {
       playerCards[msg.sender][i] = playerCards[msg.sender][i + 1];
