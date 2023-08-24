@@ -40,6 +40,11 @@ contract PartyCardCrasher {
   function playCard(uint256 index) public {
     require(index < playerCards[msg.sender].length, "You do not have this card");
     require(startGame, "Must have at least 2 players");
+    require(
+      playerCards[msg.sender][index] == currentCard + 1 ||
+      playerCards[msg.sender][index] == currentCard - 1 ||
+      currentCard == 9 && playerCards[msg.sender][index] == 1 ||
+      currentCard == 1 && playerCards[msg.sender][index] == 9, "Invalid Play");
 
     currentCard = playerCards[msg.sender][index];
 
