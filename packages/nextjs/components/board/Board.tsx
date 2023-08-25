@@ -6,6 +6,11 @@ import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaf
 export const Board = () => {
   const { address } = useAccount();
 
+  const { data: balance } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "getBalance",
+  });
+
   const { data: currentCard } = useScaffoldContractRead({
     contractName: "PartyCardCrasher",
     functionName: "currentCard",
@@ -19,6 +24,11 @@ export const Board = () => {
   const { data: startGame } = useScaffoldContractRead({
     contractName: "PartyCardCrasher",
     functionName: "startGame",
+  });
+
+  const { data: winner } = useScaffoldContractRead({
+    contractName: "PartyCardCrasher",
+    functionName: "isWinner",
   });
 
   const { data: isPay } = useScaffoldContractRead({
@@ -36,6 +46,7 @@ export const Board = () => {
   const { writeAsync: playGame } = useScaffoldContractWrite({
     contractName: "PartyCardCrasher",
     functionName: "playGame",
+    value: "0.001",
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
     },
@@ -44,6 +55,14 @@ export const Board = () => {
   const { writeAsync: drawCard } = useScaffoldContractWrite({
     contractName: "PartyCardCrasher",
     functionName: "drawCard",
+    onBlockConfirmation: txnReceipt => {
+      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
+  const { writeAsync: claimPrize } = useScaffoldContractWrite({
+    contractName: "PartyCardCrasher",
+    functionName: "claimPrize",
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
     },
@@ -57,14 +76,16 @@ export const Board = () => {
           })}
         </div>
         <div>
-          <h1 className="mt-3 text-4xl">Deck</h1>
+          <h2 className="mt-3 text-4xl">Reward</h2>
+          <p className="mt-3 text-2xl">{(balance?.toString() as any) / 10 ** 18} ETH</p>
+          <h2 className="mt-3 text-4xl">Discard Pile</h2>
           <Card key={"99"} id={99} content={currentCard?.toString()} index={99} startGame={startGame} />
           {!isPay && (
             <button
               className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
               onClick={() => playGame()}
             >
-              Play Game
+              Play Game (0.001 ETH)
             </button>
           )}
           {isPay && (
@@ -91,6 +112,14 @@ export const Board = () => {
                 />
               ))}
           </div>
+          {winner === address && (
+            <button
+              className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
+              onClick={() => claimPrize()}
+            >
+              Claim Reward
+            </button>
+          )}
         </div>
       </div>
     </div>

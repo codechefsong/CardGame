@@ -9,6 +9,7 @@ contract PartyCardCrasher {
   mapping(address => uint256[]) public playerCards;
   mapping(address => bool) public isPay;
   address[] public currentPlayers;
+  address public isWinner;
 
   constructor(address _owner) {
     owner = _owner;
@@ -19,7 +20,10 @@ contract PartyCardCrasher {
     _;
   }
 
-  function playGame() public {
+  function playGame() public payable {
+    require(!isPay[msg.sender], "You already paid");
+    require(msg.value >= 0.001 ether, "Failed to send enough value");
+
     isPay[msg.sender] = true;
     uint256[] memory cards = drawCards(7);
     playerCards[msg.sender] = cards;
@@ -53,6 +57,8 @@ contract PartyCardCrasher {
     }
 
     playerCards[msg.sender].pop();
+
+    if(playerCards[msg.sender].length == 0) isWinner = msg.sender;
   }
 
   function drawCard() public {
@@ -77,6 +83,16 @@ contract PartyCardCrasher {
 
   function getCurrentPlayers() public view returns (address[] memory) {
     return currentPlayers;
+  }
+
+  function getBalance() public view returns (uint) {
+    return address(this).balance;
+  }
+
+  function claimPrize() public {
+    require(isWinner == msg.sender, "Not a winner");
+    (bool sent,) = msg.sender.call{value: address(this).balance}("");
+    require(sent, "It did not work");
   }
 
   /**
