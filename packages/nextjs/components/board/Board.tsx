@@ -101,7 +101,7 @@ export const Board = () => {
           )}
           <div className="flex flex-wrap  mt-3" style={{ width: "350px" }}>
             {playerCards &&
-              playerCards.map((val, index) => (
+              playerCards.map((val: any, index: any) => (
                 <Card
                   key={index}
                   id={index}

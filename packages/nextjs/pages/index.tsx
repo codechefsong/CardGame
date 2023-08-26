@@ -1,4 +1,4 @@
-// import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
@@ -13,7 +13,7 @@ const Home: NextPage = () => {
             <span className="block text-2xl mb-2">Welcome to</span>
             <span className="block text-4xl font-bold">Party Card Crasher</span>
           </h1>
-          <img alt="Game" width={400} height={400} src="/assets/game.png" />
+          <Image alt="Game" width={400} height={400} src="/assets/game.png" />
           <p className="text-center text-lg">Be the first player to get rid of all your cards to win</p>
           <div className="flex justify-center mb-6">
             <Link
