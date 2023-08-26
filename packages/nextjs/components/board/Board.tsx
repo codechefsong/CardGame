@@ -76,10 +76,6 @@ export const Board = () => {
           })}
         </div>
         <div>
-          <h2 className="mt-3 text-4xl">Reward</h2>
-          <p className="mt-3 text-2xl">{(balance?.toString() as any) / 10 ** 18} ETH</p>
-          <h2 className="mt-3 text-4xl">Discard Pile</h2>
-          <Card key={"99"} id={99} content={currentCard?.toString()} index={99} startGame={startGame} />
           {!isPay && (
             <button
               className="py-2 px-16 mb-1 mt-3 mr-3 bg-green-500 rounded baseline hover:bg-green-300 disabled:opacity-50"
@@ -88,6 +84,10 @@ export const Board = () => {
               Play Game (0.001 ETH)
             </button>
           )}
+          <h2 className="mt-3 text-4xl">Reward</h2>
+          <p className="mt-3 text-2xl">{(balance?.toString() as any) / 10 ** 18} ETH</p>
+          <h2 className="mt-3 text-4xl">Discard Pile</h2>
+          <Card key={"99"} id={99} content={currentCard?.toString()} index={99} startGame={startGame} />
           {isPay && (
             <div>
               <h2 className="mt-4 text-3xl">Your Cards</h2>
